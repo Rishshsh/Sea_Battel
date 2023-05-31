@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <time.h> //для работы с датой и временем.
 #include <windows.h> //включает функции WinAPI sleep(), beep() и т.д
 #include <conio.h> //библиотека для создания текстового интерфейса пользователя
@@ -20,9 +20,19 @@ void SetCursor(int x, int y) { //функция для того чтобы ус�
     SetConsoleCursorPosition(hStdOut, myCoords); //Способ перемещения курсора на нужные координаты
 }
 
+void hidecursor() //функция, которая скрывает мигающий курсор консоли
+{
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO info;
+    info.dwSize = 100;
+    info.bVisible = FALSE;
+    SetConsoleCursorInfo(consoleHandle, &info);
+}
+
+
 void Avake() { //функция вывода названия игры
     setColor(White, Black);
-    SetCursor(24, 12);
+    SetCursor(24, 9);
     cout << "МОРСКОЙ БОЙ";
 }
 
@@ -356,6 +366,16 @@ void Meny(int num)//вывод реплик
 int main() {
     setlocale(LC_ALL, "Russian");
     srand(time(NULL));
+    hidecursor();
+    system("mode con cols=60 lines=20");
+    HWND hWnd;
+    HMENU hm;
+    hWnd = GetConsoleWindow();
+    hm = GetSystemMenu(hWnd, FALSE);
+    RemoveMenu(hm, SC_SIZE, MF_BYCOMMAND | MF_REMOVE);
+    RemoveMenu(hm, SC_MAXIMIZE, MF_BYCOMMAND | MF_REMOVE);
+    DrawMenuBar(hWnd);
+
     char variant_1[2][30] = { "ИГРА ДЛЯ ДВОИХ", "ИГРА ДЛЯ ОДНОГО" };
     int ship_pos[12][24] = { 0 };
     int enemy_ship_pos[12][24] = { 0 };
